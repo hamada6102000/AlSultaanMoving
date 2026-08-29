@@ -1,0 +1,73 @@
+@model ServiceDetailsViewModel
+@inject IContentRepository Repo
+@{
+    ViewData["Title"] = Model.Service.Title;
+    ViewData["Description"] = Model.Service.Short;
+    var s = Model.Service;
+    var site = Repo.Site;
+}
+
+<section class="page-hero">
+    <div class="container">
+        <h1><i class="fa-solid @s.Icon"></i> @s.Title</h1>
+        <div class="breadcrumb-c">
+            <a asp-controller="Home" asp-action="Index">الرئيسية</a> <span>/</span>
+            <a asp-controller="Services" asp-action="Index">خدماتنا</a> <span>/</span>
+            <span>@s.Title</span>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-white">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <div class="article">
+                    <p style="font-size:1.1rem;color:var(--primary);font-weight:700">@s.Short</p>
+                    <div class="article-content">
+                        @Html.Raw(s.Content)
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap mt-4 pt-3 border-top">
+                        <a href="tel:@site.PhoneIntl" class="btn btn-primary-b btn-lg"><i class="fa-solid fa-phone-volume"></i> اتصل الآن</a>
+                        <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa btn-lg"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                        <a href="#booking" class="btn btn-cta btn-lg"><i class="fa-solid fa-calendar-check"></i> احجز هذه الخدمة</a>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h3 class="mb-3">خدمات أخرى قد تهمّك</h3>
+                    <div class="row g-3">
+                        @foreach (var o in Model.Others.Take(3))
+                        {
+                            <div class="col-md-4">
+                                <a asp-controller="Services" asp-action="Details" asp-route-slug="@o.Slug" class="service-card">
+                                    <div class="service-top" style="padding:1.1rem">
+                                        <div class="s-ico" style="width:44px;height:44px;font-size:1.1rem"><i class="fa-solid @o.Icon"></i></div>
+                                        <h4 style="font-size:1rem">@o.Title</h4>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="widget" id="booking">
+                    <h4><i class="fa-solid fa-calendar-check"></i> احجز الخدمة</h4>
+                    <partial name="_BookingForm" model="Model.Form" />
+                </div>
+                <div class="widget widget-cta">
+                    <h4>تحتاج مساعدة سريعة؟</h4>
+                    <p>فريقنا متاح على مدار الساعة للرد على استفساراتك</p>
+                    <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa w-100 mb-2"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                    <a href="tel:@site.PhoneIntl" class="btn btn-cta w-100"><i class="fa-solid fa-phone"></i> @site.Phone</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

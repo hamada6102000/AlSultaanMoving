@@ -1,0 +1,252 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = null;
+    var c = Model.Content;
+    var site = c.Site;
+}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="hero-badge"><i class="fa-solid fa-trophy"></i> @site.Tagline</span>
+                <h1>شركة السلطان <span class="hl">لنقل الأثاث</span> بالرياض</h1>
+                <p class="lead">@site.Description</p>
+                <div class="hero-cta">
+                    <a href="tel:@site.PhoneIntl" class="btn btn-cta btn-lg"><i class="fa-solid fa-phone-volume"></i> اتصل الآن @site.Phone</a>
+                    <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa btn-lg"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                </div>
+                <div class="hero-trust">
+                    <span><i class="fa-solid fa-clock"></i> خدمة 24 ساعة</span>
+                    <span><i class="fa-solid fa-shield-halved"></i> نقل آمن ومضمون</span>
+                    <span><i class="fa-solid fa-tags"></i> أسعار تنافسية</span>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="booking-card">
+                    <h3><i class="fa-solid fa-calendar-check"></i> احجز خدمتك الآن</h3>
+                    <p class="sub">املأ النموذج وسنتواصل معك فوراً بعرض سعر مجاني</p>
+                    <partial name="_BookingForm" model="Model.Form" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHY US -->
+<section class="section bg-white">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">لماذا تختارنا</span>
+            <h2>أكثر من مجرد شركة نقل عفش</h2>
+            <p>نجمع بين الخبرة والاحترافية لنقدّم لك تجربة نقل خالية من المتاعب</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var f in c.Features)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <div class="feature-card">
+                        <div class="feature-ico"><i class="fa-solid @f.Icon"></i></div>
+                        <h4>@f.Title</h4>
+                        <p>@f.Desc</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section bg-soft">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">خدماتنا</span>
+            <h2>خدمات نقل عفش متكاملة في الرياض</h2>
+            <p>كل ما تحتاجه لنقل أثاثك بأمان تحت سقف واحد</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var s in c.Services)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <a asp-controller="Services" asp-action="Details" asp-route-slug="@s.Slug" class="service-card">
+                        <div class="service-top">
+                            <div class="s-ico"><i class="fa-solid @s.Icon"></i></div>
+                            <h4>@s.Title</h4>
+                        </div>
+                        <div class="service-body">
+                            <p>@s.Short</p>
+                            <span class="more">اقرأ المزيد <i class="fa-solid fa-arrow-left"></i></span>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section bg-white">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">كيف نعمل</span>
+            <h2>خطوات بسيطة لنقل مريح</h2>
+            <p>من أول اتصال وحتى تركيب أثاثك في مكانه الجديد</p>
+        </div>
+        <div class="row g-4">
+            @{ int step = 1; }
+            @foreach (var p in c.Process)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <div class="process-step">
+                        <span class="process-badge">@step</span>
+                        <div class="process-num"><i class="fa-solid @p.Icon"></i></div>
+                        <h4>@p.Title</h4>
+                        <p>@p.Desc</p>
+                    </div>
+                </div>
+                step++;
+            }
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-band">
+    <div class="container">
+        <div class="row">
+            @foreach (var s in site.Stats)
+            {
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="num">@s.Value</div>
+                        <div class="lbl">@s.Label</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- AREAS -->
+<section class="section bg-soft">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">مناطق الخدمة</span>
+            <h2>نغطّي جميع أحياء الرياض</h2>
+            <p>أينما كنت في الرياض، فريقنا يصل إليك بسرعة</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var a in c.Areas)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="area-card">
+                        <h4><i class="fa-solid @a.Icon"></i> @a.Region</h4>
+                        <ul class="hood-list">
+                            @foreach (var h in a.Neighborhoods)
+                            {
+                                <li>@h</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a asp-controller="Areas" asp-action="Index" class="btn btn-outline-c">عرض كل مناطق الخدمة <i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section bg-white">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">آراء عملائنا</span>
+            <h2>ماذا يقول عملاؤنا عنّا</h2>
+            <p>ثقة أكثر من 1500 عميل في الرياض</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var t in c.Testimonials)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="testi-card">
+                        <div class="testi-stars">
+                            @for (int i = 0; i < t.Rating; i++)
+                            {
+                                <i class="fa-solid fa-star"></i>
+                            }
+                        </div>
+                        <p>"@t.Text"</p>
+                        <div class="testi-meta">
+                            <div class="testi-avatar">@(string.IsNullOrEmpty(t.Name) ? "؟" : t.Name.Substring(0,1))</div>
+                            <div>
+                                <strong>@t.Name</strong>
+                                <small>@t.Area</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- FAQ + LATEST BLOG -->
+<section class="section bg-soft">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <span class="section-eyebrow">الأسئلة الشائعة</span>
+                <h2 class="mb-4">إجابات لأكثر ما يسأل عنه عملاؤنا</h2>
+                <div class="accordion" id="faqAcc">
+                    @{ int fi = 0; }
+                    @foreach (var q in c.Faq)
+                    {
+                        var cid = $"faq{fi}";
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button @(fi==0 ? "" : "collapsed")" type="button" data-bs-toggle="collapse" data-bs-target="#@cid">
+                                    @q.Q
+                                </button>
+                            </h2>
+                            <div id="@cid" class="accordion-collapse collapse @(fi==0 ? "show" : "")" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">@q.A</div>
+                            </div>
+                        </div>
+                        fi++;
+                    }
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <span class="section-eyebrow">من المدونة</span>
+                <h2 class="mb-4">أحدث المقالات والنصائح</h2>
+                @foreach (var post in Model.LatestPosts)
+                {
+                    <a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" class="mini-post d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-angle-left text-warning"></i> @post.Title</span>
+                    </a>
+                }
+                <div class="mt-3">
+                    <a asp-controller="Blog" asp-action="Index" class="btn btn-primary-b">كل المقالات <i class="fa-solid fa-arrow-left"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+    <div class="container">
+        <h2>جاهز لنقل أثاثك بأمان؟</h2>
+        <p>اتصل بنا الآن واحصل على عرض سعر مجاني خلال دقائق</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+            <a href="tel:@site.PhoneIntl" class="btn btn-dark-c btn-lg"><i class="fa-solid fa-phone-volume"></i> @site.Phone</a>
+            <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa btn-lg"><i class="fa-brands fa-whatsapp"></i> راسلنا على واتساب</a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

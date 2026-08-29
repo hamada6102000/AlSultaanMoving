@@ -1,0 +1,49 @@
+@model SiteContent
+@{
+    ViewData["Title"] = "مناطق الخدمة";
+    var site = Model.Site;
+}
+
+<section class="page-hero">
+    <div class="container">
+        <h1>مناطق الخدمة</h1>
+        <div class="breadcrumb-c">
+            <a asp-controller="Home" asp-action="Index">الرئيسية</a> <span>/</span> <span>مناطق الخدمة</span>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-white">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">تغطية شاملة</span>
+            <h2>نخدم جميع أحياء الرياض</h2>
+            <p>فريقنا ينتشر في كل مناطق الرياض ليصل إليك أينما كنت وبأسرع وقت</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var a in Model.Areas)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="area-card">
+                        <h4><i class="fa-solid @a.Icon"></i> @a.Region</h4>
+                        <ul class="hood-list">
+                            @foreach (var h in a.Neighborhoods)
+                            {
+                                <li>@h</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+        <p class="text-center text-muted mt-4">لم تجد حيّك في القائمة؟ لا تقلق — نخدم كل أحياء الرياض. تواصل معنا للتأكد.</p>
+    </div>
+</section>
+
+<section class="cta-band">
+    <div class="container">
+        <h2>اطلب خدمة نقل العفش في حيّك الآن</h2>
+        <p>تغطية سريعة لكل مناطق الرياض على مدار الساعة</p>
+        <a href="tel:@site.PhoneIntl" class="btn btn-dark-c btn-lg"><i class="fa-solid fa-phone-volume"></i> @site.Phone</a>
+    </div>
+</section>

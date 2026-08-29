@@ -1,0 +1,59 @@
+@model BlogPostViewModel
+@inject IContentRepository Repo
+@{
+    ViewData["Title"] = Model.Post.Title;
+    ViewData["Description"] = Model.Post.Excerpt;
+    var post = Model.Post;
+    var site = Repo.Site;
+}
+
+<section class="page-hero">
+    <div class="container">
+        <h1 style="font-size:1.7rem;max-width:800px;margin:0 auto">@post.Title</h1>
+        <div class="breadcrumb-c mt-2">
+            <a asp-controller="Home" asp-action="Index">الرئيسية</a> <span>/</span>
+            <a asp-controller="Blog" asp-action="Index">المدونة</a>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-white">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <article class="article">
+                    <div class="meta">
+                        <i class="fa-regular fa-calendar"></i> @post.PublishedDate.ToString("dd MMMM yyyy")
+                        &nbsp;&nbsp; <i class="fa-solid fa-user"></i> فريق السلطان
+                        &nbsp;&nbsp; <i class="fa-regular fa-file-lines"></i> @post.WordCount كلمة
+                    </div>
+                    <div class="article-content">
+                        @Html.Raw(post.ContentHtml)
+                    </div>
+                </article>
+            </div>
+            <div class="col-lg-4">
+                <div class="widget widget-cta">
+                    <h4>احجز خدمة نقل العفش</h4>
+                    <p>اتصل بنا الآن واحصل على عرض سعر مجاني</p>
+                    <a href="tel:@site.PhoneIntl" class="btn btn-cta w-100 mb-2"><i class="fa-solid fa-phone"></i> @site.Phone</a>
+                    <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa w-100"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                </div>
+                <div class="widget">
+                    <h4>مقالات ذات صلة</h4>
+                    @foreach (var r in Model.Related)
+                    {
+                        <a asp-controller="Blog" asp-action="Post" asp-route-slug="@r.Slug" class="mini-post">@r.Title</a>
+                    }
+                </div>
+                <div class="widget">
+                    <h4>خدماتنا</h4>
+                    @foreach (var sv in Repo.GetServices())
+                    {
+                        <a asp-controller="Services" asp-action="Details" asp-route-slug="@sv.Slug" class="mini-post"><i class="fa-solid @sv.Icon text-warning me-1"></i> @sv.Title</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

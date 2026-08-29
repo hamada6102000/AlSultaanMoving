@@ -1,0 +1,145 @@
+@inject IContentRepository Repo
+@{
+    var site = Repo.Site;
+    var services = Repo.GetServices();
+    string ctrl = (string?)ViewContext.RouteData.Values["controller"] ?? "Home";
+    string act = (string?)ViewContext.RouteData.Values["action"] ?? "Index";
+    bool IsActive(string c) => string.Equals(ctrl, c, StringComparison.OrdinalIgnoreCase);
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " | " + site.Name : site.Name + " - " + site.Tagline)</title>
+    <meta name="description" content="@(ViewData["Description"] ?? site.Description)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Top bar -->
+    <div class="topbar d-none d-md-block">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="topbar-info">
+                <span><i class="fa-solid fa-location-dot"></i> @site.City، @site.Country</span>
+                <span><i class="fa-regular fa-clock"></i> @site.Hours</span>
+            </div>
+            <div class="topbar-contact">
+                <a href="mailto:@site.Email"><i class="fa-regular fa-envelope"></i> @site.Email</a>
+                <a href="tel:@site.PhoneIntl"><i class="fa-solid fa-phone"></i> @site.Phone</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header / Nav -->
+    <nav class="navbar navbar-expand-lg site-nav sticky-top">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark"><i class="fa-solid fa-truck-ramp-box"></i></span>
+                <span class="brand-text">
+                    <strong>السلطان</strong>
+                    <small>لنقل الأثاث بالرياض</small>
+                </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="القائمة">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link @(IsActive("Home") && act=="Index" ? "active" : "")" asp-controller="Home" asp-action="Index">الرئيسية</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @(IsActive("Services") ? "active" : "")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">خدماتنا</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Services" asp-action="Index">كل الخدمات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            @foreach (var s in services)
+                            {
+                                <li><a class="dropdown-item" asp-controller="Services" asp-action="Details" asp-route-slug="@s.Slug"><i class="fa-solid @s.Icon me-2"></i>@s.Title</a></li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link @(IsActive("Blog") ? "active" : "")" asp-controller="Blog" asp-action="Index">المدونة</a></li>
+                    <li class="nav-item"><a class="nav-link @(IsActive("Areas") ? "active" : "")" asp-controller="Areas" asp-action="Index">مناطق الخدمة</a></li>
+                    <li class="nav-item"><a class="nav-link @(IsActive("Home") && act=="About" ? "active" : "")" asp-controller="Home" asp-action="About">من نحن</a></li>
+                    <li class="nav-item"><a class="nav-link @(IsActive("Contact") ? "active" : "")" asp-controller="Contact" asp-action="Index">تواصل معنا</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-cta" href="tel:@site.PhoneIntl"><i class="fa-solid fa-phone-volume"></i> @site.Phone</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand">
+                        <span class="brand-mark"><i class="fa-solid fa-truck-ramp-box"></i></span>
+                        <span class="brand-text"><strong>@site.ShortName</strong></span>
+                    </div>
+                    <p>@site.Description</p>
+                    <div class="footer-social">
+                        <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" aria-label="واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="tel:@site.PhoneIntl" aria-label="اتصال"><i class="fa-solid fa-phone"></i></a>
+                        <a href="mailto:@site.Email" aria-label="البريد"><i class="fa-regular fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>روابط سريعة</h5>
+                    <ul class="footer-links">
+                        <li><a asp-controller="Home" asp-action="Index">الرئيسية</a></li>
+                        <li><a asp-controller="Services" asp-action="Index">خدماتنا</a></li>
+                        <li><a asp-controller="Blog" asp-action="Index">المدونة</a></li>
+                        <li><a asp-controller="Areas" asp-action="Index">مناطق الخدمة</a></li>
+                        <li><a asp-controller="Home" asp-action="About">من نحن</a></li>
+                        <li><a asp-controller="Contact" asp-action="Index">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>خدماتنا</h5>
+                    <ul class="footer-links">
+                        @foreach (var s in services)
+                        {
+                            <li><a asp-controller="Services" asp-action="Details" asp-route-slug="@s.Slug">@s.Title</a></li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>تواصل معنا</h5>
+                    <ul class="footer-contact">
+                        <li><i class="fa-solid fa-phone"></i> <a href="tel:@site.PhoneIntl">@site.Phone</a></li>
+                        <li><i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener">واتساب</a></li>
+                        <li><i class="fa-regular fa-envelope"></i> <a href="mailto:@site.Email">@site.Email</a></li>
+                        <li><i class="fa-solid fa-location-dot"></i> @site.City</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container d-flex flex-wrap justify-content-between">
+                <span>© @DateTime.Now.Year @site.Name — جميع الحقوق محفوظة.</span>
+                <span>خدمة نقل عفش احترافية في @site.City على مدار الساعة.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating action buttons -->
+    <div class="floating-actions">
+        <a class="fab fab-whatsapp" href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" aria-label="تواصل واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+        <a class="fab fab-call" href="tel:@site.PhoneIntl" aria-label="اتصل بنا"><i class="fa-solid fa-phone"></i></a>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

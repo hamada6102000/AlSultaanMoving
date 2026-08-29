@@ -1,0 +1,68 @@
+@model BlogIndexViewModel
+@{
+    ViewData["Title"] = "المدونة";
+}
+
+<section class="page-hero">
+    <div class="container">
+        <h1>المدونة</h1>
+        <div class="breadcrumb-c">
+            <a asp-controller="Home" asp-action="Index">الرئيسية</a> <span>/</span> <span>المدونة</span>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-white">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">مقالات ونصائح</span>
+            <h2>كل ما تريد معرفته عن نقل العفش</h2>
+            <p>نصائح وإرشادات من خبراء نقل الأثاث في الرياض</p>
+        </div>
+
+        <form asp-controller="Blog" asp-action="Index" method="get" class="row justify-content-center mb-5">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" name="q" value="@Model.Query" class="form-control" placeholder="ابحث في المقالات..." />
+                    <button class="btn btn-primary-b" type="submit"><i class="fa-solid fa-magnifying-glass"></i> بحث</button>
+                </div>
+            </div>
+        </form>
+
+        @if (!Model.Posts.Any())
+        {
+            <p class="text-center text-muted">لا توجد مقالات مطابقة لبحثك.</p>
+        }
+
+        <div class="row g-4">
+            @foreach (var post in Model.Posts)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="post-card">
+                        <div class="post-thumb"><span class="cat"><i class="fa-solid fa-truck-ramp-box"></i> نقل عفش</span></div>
+                        <div class="post-body">
+                            <div class="post-meta"><i class="fa-regular fa-calendar"></i> @post.PublishedDate.ToString("yyyy/MM/dd") &nbsp; <i class="fa-regular fa-file-lines"></i> @post.WordCount كلمة</div>
+                            <h3><a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug">@post.Title</a></h3>
+                            <p>@post.Excerpt</p>
+                            <a asp-controller="Blog" asp-action="Post" asp-route-slug="@post.Slug" class="more">اقرأ المقال <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center">
+                    @for (int p = 1; p <= Model.TotalPages; p++)
+                    {
+                        <li class="page-item @(p == Model.Page ? "active" : "")">
+                            <a class="page-link" asp-controller="Blog" asp-action="Index" asp-route-page="@p" asp-route-q="@Model.Query">@p</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</section>

@@ -1,0 +1,53 @@
+@inject IContentRepository Repo
+@model ContactMessage
+@{
+    var types = Repo.GetServiceTypes();
+    var areas = Repo.GetAreas();
+}
+<form asp-controller="Contact" asp-action="Submit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+    <div class="mb-3 field-icon">
+        <label class="form-label">الاسم</label>
+        <i class="fa-solid fa-user"></i>
+        <input asp-for="Name" class="form-control" placeholder="اكتب اسمك" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3 field-icon">
+        <label class="form-label">رقم الجوال</label>
+        <i class="fa-solid fa-phone"></i>
+        <input asp-for="Phone" class="form-control" placeholder="05xxxxxxxx" inputmode="tel" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="mb-3 field-icon">
+        <label class="form-label">نوع الخدمة</label>
+        <i class="fa-solid fa-truck-ramp-box"></i>
+        <select asp-for="ServiceType" class="form-select">
+            <option value="">اختر الخدمة</option>
+            @foreach (var t in types)
+            {
+                <option value="@t">@t</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3 field-icon">
+        <label class="form-label">الحي / المنطقة</label>
+        <i class="fa-solid fa-location-dot"></i>
+        <select asp-for="Neighborhood" class="form-select">
+            <option value="">اختر الحي</option>
+            @foreach (var a in areas)
+            {
+                <optgroup label="@a.Region">
+                    @foreach (var h in a.Neighborhoods)
+                    {
+                        <option value="@h">@h</option>
+                    }
+                </optgroup>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">تفاصيل إضافية (اختياري)</label>
+        <textarea asp-for="Message" class="form-control" rows="2" placeholder="أخبرنا بتفاصيل النقل..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary-c btn-lg w-100"><i class="fa-solid fa-paper-plane"></i> اطلب عرض سعر مجاني</button>
+</form>

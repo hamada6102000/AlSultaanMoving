@@ -1,0 +1,49 @@
+@model SiteContent
+@{
+    ViewData["Title"] = "خدماتنا";
+    var site = Model.Site;
+}
+
+<section class="page-hero">
+    <div class="container">
+        <h1>خدماتنا</h1>
+        <div class="breadcrumb-c">
+            <a asp-controller="Home" asp-action="Index">الرئيسية</a> <span>/</span> <span>خدماتنا</span>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-white">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">حلول متكاملة</span>
+            <h2>كل خدمات نقل العفش تحت سقف واحد</h2>
+            <p>اختر الخدمة التي تناسب احتياجك واحصل على عرض سعر مجاني</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var s in Model.Services)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <a asp-controller="Services" asp-action="Details" asp-route-slug="@s.Slug" class="service-card">
+                        <div class="service-top">
+                            <div class="s-ico"><i class="fa-solid @s.Icon"></i></div>
+                            <h4>@s.Title</h4>
+                        </div>
+                        <div class="service-body">
+                            <p>@s.Short</p>
+                            <span class="more">تفاصيل الخدمة <i class="fa-solid fa-arrow-left"></i></span>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="cta-band">
+    <div class="container">
+        <h2>لم تجد ما تبحث عنه؟</h2>
+        <p>اتصل بنا ودعنا نصمّم لك حلاً مناسباً</p>
+        <a href="tel:@site.PhoneIntl" class="btn btn-dark-c btn-lg"><i class="fa-solid fa-phone-volume"></i> @site.Phone</a>
+    </div>
+</section>

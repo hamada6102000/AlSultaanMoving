@@ -1,0 +1,52 @@
+@inject IContentRepository Repo
+@{
+    ViewData["Title"] = "تم استلام طلبك";
+    var site = Repo.Site;
+    var waUrl = TempData["WhatsAppUrl"] as string;
+}
+
+<section class="section bg-white" style="min-height:60vh;display:flex;align-items:center">
+    <div class="container text-center" style="max-width:680px">
+        <div class="feature-ico" style="width:96px;height:96px;font-size:2.6rem;background:#e6f7ec;color:var(--whatsapp)">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h1 class="mt-4">تم استلام طلبك بنجاح!</h1>
+        <p style="font-size:1.1rem;color:var(--muted)">
+            @(TempData["Success"] as string ?? "شكراً لتواصلك مع شركة السلطان لنقل الأثاث. سيقوم فريقنا بالتواصل معك في أقرب وقت.")
+        </p>
+
+        @if (!string.IsNullOrEmpty(waUrl))
+        {
+            <div class="alert" style="background:#e6f7ec;border:1px solid #b7e4c7;color:#1b7a43;border-radius:12px;margin:1.5rem 0">
+                <i class="fa-brands fa-whatsapp"></i>
+                يتم الآن فتح واتساب لإرسال تفاصيل طلبك... إذا لم يفتح تلقائياً، اضغط الزر بالأسفل.
+            </div>
+            <a id="waSend" href="@waUrl" target="_blank" rel="noopener" class="btn btn-wa btn-lg">
+                <i class="fa-brands fa-whatsapp"></i> إرسال الطلب عبر واتساب
+            </a>
+            <div class="mt-3">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-c"><i class="fa-solid fa-house"></i> العودة للرئيسية</a>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">لطلب أسرع، يمكنك الاتصال بنا مباشرة:</p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap mt-3">
+                <a href="tel:@site.PhoneIntl" class="btn btn-primary-b btn-lg"><i class="fa-solid fa-phone-volume"></i> @site.Phone</a>
+                <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa btn-lg"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-c btn-lg"><i class="fa-solid fa-house"></i> الرئيسية</a>
+            </div>
+        }
+    </div>
+</section>
+
+@if (!string.IsNullOrEmpty(waUrl))
+{
+    <script>
+        // Auto-open WhatsApp with the order details pre-filled to the business number.
+        (function () {
+            var url = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(waUrl));
+            setTimeout(function () { window.open(url, "_blank"); }, 800);
+        })();
+    </script>
+}
