@@ -51,6 +51,7 @@ public class ContactController : Controller
         // 2) Build a WhatsApp link that sends all the order details to the business.
         TempData["Success"] = "تم استلام طلبك بنجاح! سنتواصل معك في أقرب وقت.";
         TempData["WhatsAppUrl"] = BuildWhatsAppUrl(form);
+        TempData["EmailUrl"] = BuildEmailUrl(form);
 
         return RedirectToAction(nameof(ThankYou));
     }
@@ -63,6 +64,20 @@ public class ContactController : Controller
         var number = _config["OrderNotifications:WhatsAppNumber"] ?? "";
         number = new string(number.Where(char.IsDigit).ToArray()); // keep digits only
 
+        var text = Uri.EscapeDataString(BuildOrderText(form));
+        return $"https://wa.me/{number}?text={text}";
+    }
+
+    private string BuildEmailUrl(ContactMessage form)
+    {
+        var email = _config["OrderNotifications:Email"] ?? _repo.Site.Email;
+        var subject = Uri.EscapeDataString("طلب جديد من موقع شركة السلطان");
+        var body = Uri.EscapeDataString(BuildOrderText(form));
+        return $"mailto:{email}?subject={subject}&body={body}";
+    }
+
+    private static string BuildOrderText(ContactMessage form)
+    {
         var sb = new StringBuilder();
         sb.AppendLine("🚚 طلب جديد من موقع شركة السلطان لنقل الأثاث");
         sb.AppendLine("——————————————");
@@ -75,8 +90,6 @@ public class ContactController : Controller
         if (!string.IsNullOrWhiteSpace(form.Message))
             sb.AppendLine($"📝 التفاصيل: {form.Message}");
         sb.AppendLine($"🕐 التاريخ: {DateTime.Now:yyyy/MM/dd HH:mm}");
-
-        var text = Uri.EscapeDataString(sb.ToString());
-        return $"https://wa.me/{number}?text={text}";
+        return sb.ToString();
     }
 }

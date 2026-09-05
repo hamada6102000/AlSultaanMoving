@@ -3,6 +3,7 @@
     ViewData["Title"] = "تم استلام طلبك";
     var site = Repo.Site;
     var waUrl = TempData["WhatsAppUrl"] as string;
+    var emailUrl = TempData["EmailUrl"] as string;
 }
 
 <section class="section bg-white" style="min-height:60vh;display:flex;align-items:center">
@@ -24,6 +25,12 @@
             <a id="waSend" href="@waUrl" target="_blank" rel="noopener" class="btn btn-wa btn-lg">
                 <i class="fa-brands fa-whatsapp"></i> إرسال الطلب عبر واتساب
             </a>
+            @if (!string.IsNullOrEmpty(emailUrl))
+            {
+                <a href="@emailUrl" class="btn btn-outline-c btn-lg mt-2">
+                    <i class="fa-regular fa-envelope"></i> إرسال التفاصيل بالبريد الإلكتروني
+                </a>
+            }
             <div class="mt-3">
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-c"><i class="fa-solid fa-house"></i> العودة للرئيسية</a>
             </div>
