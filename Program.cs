@@ -40,9 +40,8 @@ builder.Services.Configure<Microsoft.Extensions.WebEncoders.WebEncoderOptions>(o
         System.Text.Unicode.UnicodeRanges.ArabicPresentationFormsB);
 });
 
-// Data layer — JSON-backed today, swappable for EF Core (see README).
+// Content is JSON-backed. Orders are sent directly from the browser to Apps Script.
 builder.Services.AddSingleton<IContentRepository, JsonContentRepository>();
-builder.Services.AddSingleton<IMessageStore, JsonMessageStore>();
 
 var app = builder.Build();
 

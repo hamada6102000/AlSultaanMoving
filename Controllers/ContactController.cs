@@ -8,13 +8,11 @@ namespace AlSultaanMoving.Controllers;
 public class ContactController : Controller
 {
     private readonly IContentRepository _repo;
-    private readonly IMessageStore _messages;
     private readonly IConfiguration _config;
 
-    public ContactController(IContentRepository repo, IMessageStore messages, IConfiguration config)
+    public ContactController(IContentRepository repo, IConfiguration config)
     {
         _repo = repo;
-        _messages = messages;
         _config = config;
     }
 
@@ -32,7 +30,7 @@ public class ContactController : Controller
     // used on the home page and service pages.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Submit(ContactMessage form, string? returnUrl = null)
+    public IActionResult Submit(ContactMessage form, string? returnUrl = null)
     {
         if (!ModelState.IsValid)
         {
@@ -45,10 +43,8 @@ public class ContactController : Controller
             return View("Index", vm);
         }
 
-        // 1) Keep a local record of the order.
-        await _messages.AddAsync(form);
-
-        // 2) Build a WhatsApp link that sends all the order details to the business.
+        // The browser normally submits directly to Apps Script. This server-side path
+        // remains a safe fallback if client-side JavaScript is unavailable.
         TempData["Success"] = "تم استلام طلبك بنجاح! سنتواصل معك في أقرب وقت.";
         TempData["WhatsAppUrl"] = BuildWhatsAppUrl(form);
         TempData["EmailUrl"] = BuildEmailUrl(form);

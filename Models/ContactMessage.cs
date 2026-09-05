@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AlSultaanMoving.Models;
 
-// A submission from the contact / booking form. Persisted by IMessageStore.
+// A submission from the contact / booking form.
 public class ContactMessage
 {
     public int Id { get; set; }

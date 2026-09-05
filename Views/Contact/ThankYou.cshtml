@@ -4,6 +4,9 @@
     var site = Repo.Site;
     var waUrl = TempData["WhatsAppUrl"] as string;
     var emailUrl = TempData["EmailUrl"] as string;
+    // The no-JS fallback posts to Contact/Submit and arrives with the links ready.
+    // The JavaScript path arrives empty and fills them in from sessionStorage below.
+    var fromServer = !string.IsNullOrEmpty(waUrl);
 }
 
 <section class="section bg-white" style="min-height:60vh;display:flex;align-items:center">
@@ -16,44 +19,71 @@
             @(TempData["Success"] as string ?? "شكراً لتواصلك مع شركة السلطان لنقل الأثاث. سيقوم فريقنا بالتواصل معك في أقرب وقت.")
         </p>
 
-        @if (!string.IsNullOrEmpty(waUrl))
-        {
+        <div id="followUp" hidden="@(!fromServer)">
             <div class="alert" style="background:#e6f7ec;border:1px solid #b7e4c7;color:#1b7a43;border-radius:12px;margin:1.5rem 0">
                 <i class="fa-brands fa-whatsapp"></i>
-                يتم الآن فتح واتساب لإرسال تفاصيل طلبك... إذا لم يفتح تلقائياً، اضغط الزر بالأسفل.
+                لتسريع الرد، أرسل لنا تفاصيل طلبك عبر واتساب أو البريد الإلكتروني.
             </div>
-            <a id="waSend" href="@waUrl" target="_blank" rel="noopener" class="btn btn-wa btn-lg">
-                <i class="fa-brands fa-whatsapp"></i> إرسال الطلب عبر واتساب
-            </a>
-            @if (!string.IsNullOrEmpty(emailUrl))
-            {
-                <a href="@emailUrl" class="btn btn-outline-c btn-lg mt-2">
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <a id="followUpWhatsapp" href="@waUrl" target="_blank" rel="noopener" class="btn btn-wa btn-lg">
+                    <i class="fa-brands fa-whatsapp"></i> إرسال الطلب عبر واتساب
+                </a>
+                <a id="followUpEmail" href="@emailUrl" class="btn btn-outline-c btn-lg">
                     <i class="fa-regular fa-envelope"></i> إرسال التفاصيل بالبريد الإلكتروني
                 </a>
-            }
+            </div>
             <div class="mt-3">
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-c"><i class="fa-solid fa-house"></i> العودة للرئيسية</a>
             </div>
-        }
-        else
-        {
+        </div>
+
+        <div id="contactFallback" hidden="@fromServer">
             <p class="text-muted">لطلب أسرع، يمكنك الاتصال بنا مباشرة:</p>
             <div class="d-flex gap-2 justify-content-center flex-wrap mt-3">
                 <a href="tel:@site.PhoneIntl" class="btn btn-primary-b btn-lg"><i class="fa-solid fa-phone-volume"></i> @site.Phone</a>
                 <a href="https://wa.me/@site.Whatsapp" target="_blank" rel="noopener" class="btn btn-wa btn-lg"><i class="fa-brands fa-whatsapp"></i> واتساب</a>
                 <a asp-controller="Home" asp-action="Index" class="btn btn-outline-c btn-lg"><i class="fa-solid fa-house"></i> الرئيسية</a>
             </div>
-        }
+        </div>
     </div>
 </section>
 
-@if (!string.IsNullOrEmpty(waUrl))
+@if (!fromServer)
 {
     <script>
-        // Auto-open WhatsApp with the order details pre-filled to the business number.
+        // Orders sent by JavaScript hand their follow-up links over in sessionStorage.
+        // Read once and clear, so a refresh or a shared device never shows a previous
+        // customer's order details.
         (function () {
-            var url = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(waUrl));
-            setTimeout(function () { window.open(url, "_blank"); }, 800);
+            var raw = null;
+            try {
+                raw = sessionStorage.getItem("alsultaan:lastOrder");
+                sessionStorage.removeItem("alsultaan:lastOrder");
+            } catch (error) {
+                return; // storage blocked — the direct-contact block stays visible
+            }
+            if (!raw) return;
+
+            var urls;
+            try { urls = JSON.parse(raw); } catch (error) { return; }
+
+            var whatsapp = expected(urls.whatsapp, "https://wa.me/");
+            var email = expected(urls.email, "mailto:");
+            if (!whatsapp && !email) return;
+
+            apply(document.getElementById("followUpWhatsapp"), whatsapp);
+            apply(document.getElementById("followUpEmail"), email);
+            document.getElementById("followUp").hidden = false;
+            document.getElementById("contactFallback").hidden = true;
+
+            // Only ever put a link back that still looks like the one we wrote.
+            function expected(value, prefix) {
+                return typeof value === "string" && value.indexOf(prefix) === 0 ? value : "";
+            }
+
+            function apply(link, url) {
+                if (url) { link.href = url; } else { link.hidden = true; }
+            }
         })();
     </script>
 }

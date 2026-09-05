@@ -1,11 +1,19 @@
 @inject IContentRepository Repo
+@inject IConfiguration Configuration
 @model ContactMessage
 @{
     var types = Repo.GetServiceTypes();
     var areas = Repo.GetAreas();
+    var notifications = Configuration.GetSection("OrderNotifications");
 }
-<form asp-controller="Contact" asp-action="Submit" method="post">
+<form asp-controller="Contact" asp-action="Submit" method="post"
+      data-order-form
+      data-apps-script-url="@notifications["GoogleAppsScriptUrl"]"
+      data-whatsapp-number="@notifications["WhatsAppNumber"]"
+      data-business-email="@notifications["Email"]"
+      data-thank-you-url="@Url.Action("ThankYou", "Contact")">
     <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+    <div class="order-status" data-order-status role="status" aria-live="polite"></div>
     <div class="mb-3 field-icon">
         <label class="form-label">الاسم</label>
         <i class="fa-solid fa-user"></i>
@@ -49,5 +57,5 @@
         <label class="form-label">تفاصيل إضافية (اختياري)</label>
         <textarea asp-for="Message" class="form-control" rows="2" placeholder="أخبرنا بتفاصيل النقل..."></textarea>
     </div>
-    <button type="submit" class="btn btn-primary-c btn-lg w-100"><i class="fa-solid fa-paper-plane"></i> اطلب عرض سعر مجاني</button>
+    <button type="submit" class="btn btn-primary-c btn-lg w-100" data-order-submit><i class="fa-solid fa-paper-plane"></i> اطلب عرض سعر مجاني</button>
 </form>

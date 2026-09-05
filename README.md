@@ -33,11 +33,11 @@ AlSultaanMoving/
 ├── Program.cs                 # إعداد التطبيق، الثقافة العربية، المسارات (routes)
 ├── Controllers/               # Home, Services, Blog, Areas, Contact
 ├── Models/                    # نماذج المحتوى + ContactMessage + ViewModels
-├── Data/                      # طبقة الوصول للبيانات (قابلة للاستبدال بـ EF Core)
+├── Data/                      # مستودع محتوى الموقع
 │   ├── IContentRepository.cs
 │   ├── JsonContentRepository.cs   # يقرأ App_Data/content.json عند الإقلاع
-│   ├── IMessageStore.cs
-│   └── JsonMessageStore.cs        # يحفظ رسائل نموذج التواصل
+├── GoogleAppsScript/          # الكود الذي يُنسخ إلى Google Apps Script
+│   └── Code.gs
 ├── Views/                     # صفحات Razor (RTL عربي)
 │   ├── Shared/_Layout.cshtml      # الهيدر/الفوتر/أزرار واتساب العائمة
 │   ├── Shared/_BookingForm.cshtml # نموذج الحجز المُعاد استخدامه
@@ -47,7 +47,7 @@ AlSultaanMoving/
 │   └── lib/bootstrap/             # Bootstrap 5 RTL (محلي)
 └── App_Data/
     ├── content.json               # كل محتوى الموقع (مُرحّل من ووردبريس)
-    └── messages.json              # رسائل نموذج التواصل (تُنشأ تلقائياً)
+   └── content.json               # كل محتوى الموقع
 ```
 
 ## الصفحات / Pages
@@ -65,11 +65,68 @@ AlSultaanMoving/
 
 ## طبقة البيانات / Data layer
 
-المشروع **ديناميكي بالكامل**: لا يوجد أي محتوى مكتوب داخل صفحات العرض. كل شيء يُقرأ من `App_Data/content.json` عبر واجهة `IContentRepository`، ورسائل نموذج التواصل تُحفظ عبر `IMessageStore`.
+المشروع **ديناميكي بالكامل**: لا يوجد أي محتوى مكتوب داخل صفحات العرض. كل شيء يُقرأ من `App_Data/content.json` عبر واجهة `IContentRepository`. الطلبات تُرسل من نموذج Razor مباشرة إلى Google Apps Script، ولا تُحفظ محلياً في المشروع.
 
 - **من أين جاء المحتوى؟** تم استخراجه برمجياً من ملف قاعدة بيانات ووردبريس (`.sql`): 24 مقالة بمحتواها الكامل (HTML نظيف)، عناوين الصفحات والخدمات ونصوصها، مع بيانات الشركة (الهاتف، البريد، الإحصائيات) من الموقع المباشر.
 - **لتعديل المحتوى** (نص، خدمة، هاتف، مقالة…): عدّل `App_Data/content.json` وأعد تشغيل التطبيق.
-- **رسائل نموذج التواصل** تُحفظ في `App_Data/messages.json`.
+- **طلبات نموذج التواصل** تُحفظ في Google Sheets عبر Google Apps Script.
+
+## Google Apps Script وإشعارات Telegram
+
+الكود الجاهز موجود في `GoogleAppsScript/Code.gs`. أنشئ Google Sheet، ثم افتح **Extensions → Apps Script** والصق الكود. في **Project Settings → Script Properties** أضف الخصائص التالية:
+
+| Property | Value |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | توكن البوت، داخل Apps Script فقط |
+| `TELEGRAM_CHAT_ID` | Chat ID الخاص بك، داخل Apps Script فقط |
+| `SPREADSHEET_ID` | معرّف Google Sheet |
+
+لا تضع هذه القيم في HTML أو JavaScript أو `appsettings.json`.
+
+انشر المشروع من **Deploy → New deployment → Web app** بهذه الإعدادات:
+
+- **Execute as:** Me
+- **Who has access:** Anyone
+
+بعد النشر، يجب أن يطابق رابط Web App قيمة `OrderNotifications:GoogleAppsScriptUrl` في `appsettings.json`.
+
+### أعمدة Google Sheets
+
+يُنشئ الكود الصف الأول تلقائياً إذا كانت الورقة فارغة:
+
+`Timestamp`, `Order ID`, `Date`, `Time`, `Customer Name`, `Phone`, `Service`, `Neighborhood`, `Notes`, `Status`
+
+الحالة الابتدائية لكل طلب هي `New`. رقم الطلب يكون بالشكل `ORD-YYYYMMDD-0001`.
+
+### رسالة Telegram
+
+تصل رسالة عربية بهذا الشكل:
+
+```text
+🚚 طلب جديد من موقع شركة السلطان لنقل الأثاث
+🆔 رقم الطلب: ORD-YYYYMMDD-0001
+👤 الاسم: ...
+📱 الجوال: ...
+🛠️ الخدمة: ...
+📍 الحي: ...
+📝 التفاصيل: ...
+🕐 وقت الطلب: YYYY/MM/DD HH:mm
+```
+
+للحصول على Chat ID: ابدأ محادثة مع البوت وأرسل له رسالة، ثم افتح `https://api.telegram.org/bot<TOKEN>/getUpdates` مؤقتاً وابحث عن `message.chat.id`. لا تشارك الرابط أو التوكن. بما أن التوكن ظهر في رسالة المحادثة، يوصى بإلغائه من BotFather وإصدار توكن جديد قبل الاستخدام الفعلي.
+
+### الاختبار
+
+اختبر بالترتيب:
+
+1. أرسل طلباً صحيحاً من الموقع وتأكد من ظهور JSON نجاح في Apps Script Execution log.
+2. تحقق من إضافة صف في Google Sheet.
+3. تحقق من وصول رسالة Telegram.
+4. جرّب اسماً فارغاً ورقم جوال غير صحيح.
+5. انقر زر الإرسال عدة مرات بسرعة وتأكد من تعطيله أثناء الإرسال.
+6. اختبر من نفس النطاق المستضاف فعلياً؛ لا يمكن التحقق من CORS أو Telegram أو Google Sheets من `dotnet build` وحده.
+
+إذا ظهر خطأ CORS في المتصفح، راجع أن النشر هو **Web app / Execute as Me / Anyone** وأن الرابط هو `/exec` وليس `/dev`. لا تستخدم `no-cors` لأن ذلك يمنع الموقع من قراءة استجابة JSON والتحقق من نجاح الطلب.
 
 ### لماذا JSON وليس قاعدة بيانات؟
 
@@ -79,7 +136,7 @@ AlSultaanMoving/
 
 ## الترقية إلى قاعدة بيانات حقيقية (EF Core + SQL Server / SQLite)
 
-الكود مُهيّأ لهذا: كل الوصول للبيانات يمر عبر `IContentRepository` و`IMessageStore`. للتبديل إلى قاعدة بيانات فعلية:
+الكود مُهيّأ لهذا: محتوى الموقع يمر عبر `IContentRepository`. للتبديل إلى قاعدة بيانات فعلية:
 
 1. **احذف `NuGet.config`** (حتى يصل NuGet للإنترنت)، ثم أضف الحِزم:
    ```bash
@@ -89,13 +146,12 @@ AlSultaanMoving/
    dotnet add package Microsoft.EntityFrameworkCore.Design
    ```
 2. أنشئ `AppDbContext : DbContext` مع `DbSet<BlogPost>`, `DbSet<Service>`, `DbSet<ContactMessage>` ...
-3. أنشئ `EfContentRepository : IContentRepository` و`EfMessageStore : IMessageStore` تستخدمان `AppDbContext`.
+3. أنشئ `EfContentRepository : IContentRepository` يستخدم `AppDbContext`.
 4. في `Program.cs` بدّل التسجيل:
    ```csharp
    builder.Services.AddDbContext<AppDbContext>(o =>
        o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
    builder.Services.AddScoped<IContentRepository, EfContentRepository>();
-   builder.Services.AddScoped<IMessageStore, EfMessageStore>();
    ```
 5. أنشئ الهجرة واملأ البيانات من `content.json`:
    ```bash
