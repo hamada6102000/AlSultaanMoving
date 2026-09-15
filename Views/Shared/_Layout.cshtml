@@ -11,12 +11,26 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " | " + site.Name : site.Name + " - " + site.Tagline)</title>
-    <meta name="description" content="@(ViewData["Description"] ?? site.Description)" />
+    <title>@PageMeta.Title(ViewData, site)</title>
+    <meta name="description" content="@PageMeta.Description(ViewData, site)" />
+    <partial name="_SeoHead" />
+@if (ViewData["PreloadImage"] is string preload)
+    {
+        <link rel="preload" as="image" href="@Url.Content("~" + preload)" />
+    }
+    <link rel="icon" href="~/favicon.ico" sizes="any" />
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="~/apple-touch-icon.png" />
+    @* Cairo only, and only the five weights site.css actually uses. Tajawal was being
+       downloaded (3 more files) purely as a CSS fallback name that never renders. *@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    @* Self-hosted 41-icon subset. Replaces the render-blocking cdnjs stylesheet and
+       ~300KB of webfonts with 3.1KB of CSS and 8.2KB of fonts on our own origin. *@
+    <link rel="preload" as="font" type="font/woff2" href="~/lib/fontawesome/webfonts/fa-solid-900.woff2" crossorigin />
+    <link rel="stylesheet" href="~/lib/fontawesome/fontawesome-subset.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
@@ -39,9 +53,9 @@
     <nav class="navbar navbar-expand-lg site-nav sticky-top">
         <div class="container">
             <a class="navbar-brand" asp-controller="Home" asp-action="Index">
-                <span class="brand-mark"><i class="fa-solid fa-truck-ramp-box"></i></span>
+                <span class="brand-mark"><img src="~/img/brand-mark.svg" alt="" width="46" height="46" aria-hidden="true" /></span>
                 <span class="brand-text">
-                    <strong>السلطان</strong>
+                    <strong>النور</strong>
                     <small>لنقل الأثاث بالرياض</small>
                 </span>
             </a>
@@ -84,7 +98,7 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="footer-brand">
-                        <span class="brand-mark"><i class="fa-solid fa-truck-ramp-box"></i></span>
+                        <span class="brand-mark"><img src="~/img/brand-mark.svg" alt="" width="46" height="46" loading="lazy" decoding="async" aria-hidden="true" /></span>
                         <span class="brand-text"><strong>@site.ShortName</strong></span>
                     </div>
                     <p>@site.Description</p>

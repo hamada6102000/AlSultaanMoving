@@ -1,5 +1,5 @@
 ﻿// Key the thank-you page reads the just-submitted order's follow-up links from.
-var ORDER_KEY = "alsultaan:lastOrder";
+var ORDER_KEY = "alnoor:lastOrder";
 
 document.addEventListener("DOMContentLoaded", function () {
 	document.querySelectorAll("[data-order-form]").forEach(function (form) {
@@ -85,7 +85,7 @@ function showOrderStatus(element, message, success) {
 function buildFollowUpUrls(form) {
 	var values = new FormData(form);
 	var text = [
-		"🚚 طلب جديد من موقع شركة السلطان لنقل الأثاث",
+		"🚚 طلب جديد من موقع شركة النور لنقل الأثاث",
 		"——————————————",
 		"👤 الاسم: " + (values.get("Name") || ""),
 		"📱 الجوال: " + (values.get("Phone") || ""),
@@ -99,6 +99,6 @@ function buildFollowUpUrls(form) {
 	return {
 		whatsapp: "https://wa.me/" + encodeURIComponent(form.dataset.whatsappNumber || "") + "?text=" + encodedText,
 		email: "mailto:" + encodeURIComponent(form.dataset.businessEmail || "") +
-			"?subject=" + encodeURIComponent("طلب جديد من موقع شركة السلطان") + "&body=" + encodedText
+			"?subject=" + encodeURIComponent("طلب جديد من موقع شركة النور") + "&body=" + encodedText
 	};
 }

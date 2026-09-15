@@ -1,6 +1,8 @@
 @model HomeViewModel
 @{
-    ViewData["Title"] = null;
+    ViewData["TitleFull"] = "نقل عفش بالرياض مع الفك والتركيب | شركة النور لنقل الأثاث";
+    ViewData["Description"] = "شركة النور لنقل العفش بالرياض: نقل أثاث المنازل والمكاتب مع الفك والتركيب والتغليف، شاحنات مغلقة وفنيون مدرّبون، خدمة 24 ساعة. اتصل 0543962814";
+    ViewData["PreloadImage"] = "/img/hero.jpg";
     var c = Model.Content;
     var site = c.Site;
 }
@@ -11,7 +13,7 @@
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
                 <span class="hero-badge"><i class="fa-solid fa-trophy"></i> @site.Tagline</span>
-                <h1>شركة السلطان <span class="hl">لنقل الأثاث</span> بالرياض</h1>
+                <h1>شركة النور <span class="hl">لنقل العفش والأثاث</span> بالرياض</h1>
                 <p class="lead">@site.Description</p>
                 <div class="hero-cta">
                     <a href="tel:@site.PhoneIntl" class="btn btn-cta btn-lg"><i class="fa-solid fa-phone-volume"></i> اتصل الآن @site.Phone</a>
@@ -247,6 +249,3 @@
     </div>
 </section>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

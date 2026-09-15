@@ -44,6 +44,20 @@ public class Service
     public string Icon { get; set; } = "";
     public string Short { get; set; } = "";
     public string Content { get; set; } = "";
+
+    /// <summary>
+    /// Optional real photograph. Services without one keep the icon-based card design
+    /// rather than showing a placeholder, so the grid stays visually consistent.
+    /// </summary>
+    public ServiceImage? Image { get; set; }
+}
+
+public class ServiceImage
+{
+    public string Src { get; set; } = "";
+    public string Alt { get; set; } = "";
+    public int Width { get; set; }
+    public int Height { get; set; }
 }
 
 public class ProcessStep

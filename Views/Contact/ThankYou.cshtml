@@ -1,6 +1,9 @@
 @inject IContentRepository Repo
 @{
     ViewData["Title"] = "تم استلام طلبك";
+    ViewData["Description"] = "تم استلام طلب نقل العفش بنجاح. سيتواصل معك فريق شركة النور لنقل الأثاث بالرياض في أقرب وقت لتأكيد الموعد وعرض السعر.";
+    // Post-submission page: useful to the customer, worthless in search results.
+    ViewData["Robots"] = "noindex, follow";
     var site = Repo.Site;
     var waUrl = TempData["WhatsAppUrl"] as string;
     var emailUrl = TempData["EmailUrl"] as string;
@@ -16,7 +19,7 @@
         </div>
         <h1 class="mt-4">تم استلام طلبك بنجاح!</h1>
         <p style="font-size:1.1rem;color:var(--muted)">
-            @(TempData["Success"] as string ?? "شكراً لتواصلك مع شركة السلطان لنقل الأثاث. سيقوم فريقنا بالتواصل معك في أقرب وقت.")
+            @(TempData["Success"] as string ?? "شكراً لتواصلك مع شركة النور لنقل الأثاث. سيقوم فريقنا بالتواصل معك في أقرب وقت.")
         </p>
 
         <div id="followUp" hidden="@(!fromServer)">
@@ -57,8 +60,8 @@
         (function () {
             var raw = null;
             try {
-                raw = sessionStorage.getItem("alsultaan:lastOrder");
-                sessionStorage.removeItem("alsultaan:lastOrder");
+                raw = sessionStorage.getItem("alnoor:lastOrder");
+                sessionStorage.removeItem("alnoor:lastOrder");
             } catch (error) {
                 return; // storage blocked — the direct-contact block stays visible
             }

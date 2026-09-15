@@ -1,0 +1,66 @@
+/* Font Awesome 6.5.2 - SUBSET, generated for this site. Do not hand-edit.
+ *
+ * Contains only the 41 icons this site actually uses, and only the woff2 files,
+ * whose glyph sets were reduced with fonttools to the same 41 codepoints
+ * (299,644 -> 8,200 bytes). Upstream ships ~2,000 icons.
+ *
+ * To add an icon: put its class in the markup, then re-run the subset step
+ * documented in README.md so the glyph is included in the font.
+ *
+ * font-display:swap is added here (upstream omits it) so text and icons are
+ * never invisible while the font loads.
+ *
+ * Licence: Font Awesome Free 6.5.2 - https://fontawesome.com/license/free
+ * Icons: CC BY 4.0 - Fonts: SIL OFL 1.1
+ */
+@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:swap;src:url(webfonts/fa-solid-900.woff2) format("woff2")}
+@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:400;font-display:swap;src:url(webfonts/fa-regular-400.woff2) format("woff2")}
+@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:swap;src:url(webfonts/fa-brands-400.woff2) format("woff2")}
+
+.fa,.fa-brands,.fa-regular,.fa-solid,.fab,.far,.fas{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:var(--fa-display,inline-block);font-style:normal;font-variant:normal;line-height:1;text-rendering:auto}
+.fa,.fa-regular,.fa-solid,.far,.fas{font-family:"Font Awesome 6 Free"}
+.fa-brands,.fab{font-family:"Font Awesome 6 Brands";font-weight:400}
+.fa-regular,.far{font-weight:400}
+.fa,.fa-solid,.fas{font-weight:900}
+
+.fa-angle-left:before{content:"\f104"}
+.fa-arrow-left:before{content:"\f060"}
+.fa-award:before{content:"\f559"}
+.fa-bolt:before{content:"\f0e7"}
+.fa-box-open:before{content:"\f49e"}
+.fa-boxes-packing:before{content:"\e4c7"}
+.fa-building:before{content:"\f1ad"}
+.fa-bullseye:before{content:"\f140"}
+.fa-calendar:before{content:"\f133"}
+.fa-calendar-check:before{content:"\f274"}
+.fa-circle-check:before{content:"\f058"}
+.fa-clipboard-check:before{content:"\f46c"}
+.fa-clock:before{content:"\f017"}
+.fa-envelope:before{content:"\f0e0"}
+.fa-eye:before{content:"\f06e"}
+.fa-file-lines:before{content:"\f15c"}
+.fa-hand-holding-dollar:before{content:"\f4c0"}
+.fa-handshake:before{content:"\f2b5"}
+.fa-headset:before{content:"\f590"}
+.fa-house:before{content:"\f015"}
+.fa-house-chimney:before{content:"\e3af"}
+.fa-location-arrow:before{content:"\f124"}
+.fa-location-dot:before{content:"\f3c5"}
+.fa-magnifying-glass:before{content:"\f002"}
+.fa-medal:before{content:"\f5a2"}
+.fa-paper-plane:before{content:"\f1d8"}
+.fa-phone:before{content:"\f095"}
+.fa-phone-volume:before{content:"\f2a0"}
+.fa-screwdriver-wrench:before{content:"\f7d9"}
+.fa-shield-halved:before{content:"\f3ed"}
+.fa-star:before{content:"\f005"}
+.fa-tags:before{content:"\f02c"}
+.fa-temperature-half:before{content:"\f2c9"}
+.fa-trophy:before{content:"\f091"}
+.fa-truck:before{content:"\f0d1"}
+.fa-truck-fast:before{content:"\f48b"}
+.fa-truck-ramp-box:before{content:"\f4de"}
+.fa-user:before{content:"\f007"}
+.fa-user-shield:before{content:"\f505"}
+.fa-warehouse:before{content:"\f494"}
+.fa-whatsapp:before{content:"\f232"}

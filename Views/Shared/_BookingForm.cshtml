@@ -10,20 +10,29 @@
       data-order-form
       data-apps-script-url="@notifications["GoogleAppsScriptUrl"]"
       data-whatsapp-number="@notifications["WhatsAppNumber"]"
-      data-business-email="@notifications["Email"]"
+      @* Public address only. OrderNotifications:Email is the internal recipient and
+         must never reach the page — the Apps Script sends there server-side. *@
+      data-business-email="@Repo.Site.Email"
       data-thank-you-url="@Url.Action("ThankYou", "Contact")">
     <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
     <div class="order-status" data-order-status role="status" aria-live="polite"></div>
     <div class="mb-3 field-icon">
         <label class="form-label">الاسم</label>
         <i class="fa-solid fa-user"></i>
-        <input asp-for="Name" class="form-control" placeholder="اكتب اسمك" />
+        @* Native constraints mirror the [Required]/[RegularExpression] rules on
+           ContactMessage. asp-for emits only data-val-* attributes, which need a
+           validation library; these make form.checkValidity() in site.js enforce the
+           same rules with no JavaScript library at all. The server still revalidates. *@
+        <input asp-for="Name" class="form-control" placeholder="اكتب اسمك"
+               required maxlength="80" autocomplete="name" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3 field-icon">
         <label class="form-label">رقم الجوال</label>
         <i class="fa-solid fa-phone"></i>
-        <input asp-for="Phone" class="form-control" placeholder="05xxxxxxxx" inputmode="tel" />
+        <input asp-for="Phone" class="form-control" placeholder="05xxxxxxxx" inputmode="tel"
+               required pattern="^(0?5\d{8}|\+?9665\d{8})$" autocomplete="tel"
+               title="رقم جوال سعودي غير صحيح (مثال: 05xxxxxxxx)" />
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
     <div class="mb-3 field-icon">

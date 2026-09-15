@@ -1,0 +1,49 @@
+@inject IContentRepository Repo
+@inject ISeoService Seo
+@inject ISchemaBuilder Schema
+@{
+    var site = Repo.Site;
+
+    var metaTitle = PageMeta.Title(ViewData, site);
+    var metaDescription = PageMeta.Description(ViewData, site);
+    var robots = PageMeta.Robots(ViewData);
+
+    // Pages that vary by query string (blog pagination, blog search) point their
+    // canonical at the override the view supplies; everything else self-canonicalises
+    // to the normalised path, which folds away /Home, /Home/Index and casing variants.
+    var canonicalOverride = PageMeta.CanonicalOverride(ViewData);
+    var canonical = canonicalOverride is null ? Seo.Canonical(Context) : Seo.Absolute(canonicalOverride);
+
+    var isArticle = string.Equals((string?)ViewContext.RouteData.Values["controller"], "Blog", StringComparison.OrdinalIgnoreCase)
+                 && string.Equals((string?)ViewContext.RouteData.Values["action"], "Post", StringComparison.OrdinalIgnoreCase);
+
+    var shareImage = Seo.DefaultImageUrl ?? Seo.LogoUrl;
+}
+<link rel="canonical" href="@canonical" />
+@if (!string.IsNullOrWhiteSpace(robots))
+{
+    <meta name="robots" content="@robots" />
+}
+
+<meta property="og:type" content="@(isArticle ? "article" : "website")" />
+<meta property="og:site_name" content="@site.Name" />
+<meta property="og:locale" content="ar_SA" />
+<meta property="og:title" content="@metaTitle" />
+<meta property="og:description" content="@metaDescription" />
+<meta property="og:url" content="@canonical" />
+@if (shareImage is not null)
+{
+    <meta property="og:image" content="@shareImage" />
+    <meta property="og:image:alt" content="@site.Name" />
+}
+
+@* WhatsApp is the dominant sharing channel here and reads the Open Graph tags above. *@
+<meta name="twitter:card" content="@(shareImage is null ? "summary" : "summary_large_image")" />
+<meta name="twitter:title" content="@metaTitle" />
+<meta name="twitter:description" content="@metaDescription" />
+@if (shareImage is not null)
+{
+    <meta name="twitter:image" content="@shareImage" />
+}
+
+<script type="application/ld+json">@Html.Raw(Schema.ForRequest(Context))</script>

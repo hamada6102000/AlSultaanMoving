@@ -1,7 +1,10 @@
 @model BlogPostViewModel
 @inject IContentRepository Repo
 @{
-    ViewData["Title"] = Model.Post.Title;
+    // Post titles are already keyword-rich and 40-55 characters, so appending the site
+    // name would only push them past what Google shows. The excerpt is trimmed to a
+    // whole word by PageMeta — the migrated ones are all exactly 181 characters.
+    ViewData["TitleFull"] = Model.Post.Title;
     ViewData["Description"] = Model.Post.Excerpt;
     var post = Model.Post;
     var site = Repo.Site;
@@ -24,7 +27,7 @@
                 <article class="article">
                     <div class="meta">
                         <i class="fa-regular fa-calendar"></i> @post.PublishedDate.ToString("dd MMMM yyyy")
-                        &nbsp;&nbsp; <i class="fa-solid fa-user"></i> فريق السلطان
+                        &nbsp;&nbsp; <i class="fa-solid fa-user"></i> فريق النور
                         &nbsp;&nbsp; <i class="fa-regular fa-file-lines"></i> @post.WordCount كلمة
                     </div>
                     <div class="article-content">

@@ -1,6 +1,7 @@
 @model SiteContent
 @{
-    ViewData["Title"] = "من نحن";
+    ViewData["TitleFull"] = "من نحن — شركة النور لنقل العفش والأثاث بالرياض";
+    ViewData["Description"] = Model.About.Intro;
     var a = Model.About;
     var site = Model.Site;
 }

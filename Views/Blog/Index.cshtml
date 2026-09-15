@@ -1,6 +1,29 @@
 @model BlogIndexViewModel
+@inject IContentRepository Repo
 @{
-    ViewData["Title"] = "المدونة";
+    var site = Repo.Site;
+
+    if (!string.IsNullOrWhiteSpace(Model.Query))
+    {
+        // Search results are thin and unbounded in number. Keep them out of the index,
+        // but let the crawler follow through to the posts themselves.
+        ViewData["TitleFull"] = $"نتائج البحث عن \"{Model.Query}\" | {site.Name}";
+        ViewData["Robots"] = "noindex, follow";
+        ViewData["Canonical"] = "/blog";
+    }
+    else if (Model.Page > 1)
+    {
+        // Paginated pages self-canonicalise and carry their own title, so pages 2 and 3
+        // are no longer byte-identical to page 1.
+        ViewData["TitleFull"] = $"مدونة نقل العفش بالرياض — صفحة {Model.Page} | {site.ShortName}";
+        ViewData["Description"] = $"الصفحة {Model.Page} من مقالات ونصائح نقل العفش والأثاث داخل الرياض وبين المدن، من فريق شركة النور لنقل الأثاث.";
+        ViewData["Canonical"] = $"/blog?page={Model.Page}";
+    }
+    else
+    {
+        ViewData["Title"] = "مدونة نقل العفش والأثاث بالرياض";
+        ViewData["Description"] = "مقالات ونصائح عملية عن نقل العفش بالرياض: التكلفة، التغليف، الفك والتركيب، التخزين، والنقل بين المدن — من فريق شركة النور لنقل الأثاث.";
+    }
 }
 
 <section class="page-hero">

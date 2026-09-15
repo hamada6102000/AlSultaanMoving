@@ -99,7 +99,7 @@ function ensureHeaders(sheet) {
 
 function sendTelegram(token, chatId, now, orderId, order) {
   const text = [
-    "🚚 طلب جديد من موقع شركة السلطان لنقل الأثاث",
+    "🚚 طلب جديد من موقع شركة النور لنقل الأثاث",
     "🆔 رقم الطلب: " + orderId,
     "👤 الاسم: " + order.name,
     "📱 الجوال: " + order.phone,

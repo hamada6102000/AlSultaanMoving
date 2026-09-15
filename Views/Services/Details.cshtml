@@ -1,10 +1,14 @@
 @model ServiceDetailsViewModel
 @inject IContentRepository Repo
 @{
-    ViewData["Title"] = Model.Service.Title;
-    ViewData["Description"] = Model.Service.Short;
     var s = Model.Service;
     var site = Repo.Site;
+
+    // Four of the seven service titles omit the city, and the city is the whole point
+    // of the query. The card and nav labels keep the short title from content.json.
+    ViewData["Title"] = s.Title.Contains("الرياض") ? s.Title : $"{s.Title} بالرياض";
+    // Kept short enough that the phone number survives the 158-character trim.
+    ViewData["Description"] = $"{s.Short} اتصل على {site.Phone} — خدمة 24 ساعة في الرياض وعرض سعر مجاني.";
 }
 
 <section class="page-hero">
@@ -23,6 +27,13 @@
         <div class="row g-5">
             <div class="col-lg-8">
                 <div class="article">
+                    @if (s.Image is not null)
+                    {
+                        <figure class="service-photo">
+                            <img src="@Url.Content("~" + s.Image.Src)" alt="@s.Image.Alt"
+                                 width="@s.Image.Width" height="@s.Image.Height" decoding="async" />
+                        </figure>
+                    }
                     <p style="font-size:1.1rem;color:var(--primary);font-weight:700">@s.Short</p>
                     <div class="article-content">
                         @Html.Raw(s.Content)
@@ -68,6 +79,3 @@
     </div>
 </section>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

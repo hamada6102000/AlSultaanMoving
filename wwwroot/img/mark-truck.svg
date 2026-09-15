@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150"><defs>
+  <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2A81CE"/>
+    <stop offset="1" stop-color="#1567B2"/>
+  </linearGradient>
+  <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F4C863"/>
+    <stop offset="1" stop-color="#E3A537"/>
+  </linearGradient>
+</defs><g transform="translate(6,0)"><g stroke="#E3A537" stroke-linecap="round" fill="none"><line x1="186" y1="44" x2="214" y2="44" stroke-width="6.5"/><line x1="181" y1="62" x2="207" y2="62" stroke-width="6.5"/><line x1="188" y1="80" x2="212" y2="80" stroke-width="6.5"/></g><rect x="80" y="30" width="96" height="66" rx="9" fill="url(#blueGrad)"/><rect x="18" y="52" width="66" height="44" rx="9" fill="url(#blueGrad)"/><rect x="18" y="77" width="158" height="8.5" fill="#E3A537"/><polygon points="24,72 33,58 55,58 55,72" fill="#BFDDF5"/><rect x="15.5" y="80" width="5" height="8" rx="2" fill="url(#goldGrad)"/><circle cx="50" cy="102" r="15" fill="#0B3B67"/><circle cx="50" cy="102" r="6.8" fill="url(#goldGrad)"/><circle cx="50" cy="102" r="2.5" fill="#0B3B67"/><circle cx="140" cy="102" r="15" fill="#0B3B67"/><circle cx="140" cy="102" r="6.8" fill="url(#goldGrad)"/><circle cx="140" cy="102" r="2.5" fill="#0B3B67"/></g></svg>

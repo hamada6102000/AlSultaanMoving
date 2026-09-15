@@ -1,7 +1,8 @@
 @model ContactViewModel
 @inject IContentRepository Repo
 @{
-    ViewData["Title"] = "تواصل معنا";
+    ViewData["TitleFull"] = "تواصل معنا — طلب عرض سعر نقل عفش | النور";
+    ViewData["Description"] = "اتصل بشركة النور لنقل العفش بالرياض على 0543962814 أو راسلنا على واتساب للحصول على عرض سعر مجاني لنقل أثاثك. خدمة على مدار الساعة طوال أيام الأسبوع.";
     var site = Repo.Site;
 }
 
@@ -58,6 +59,3 @@
     </div>
 </section>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

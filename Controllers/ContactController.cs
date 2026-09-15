@@ -66,8 +66,10 @@ public class ContactController : Controller
 
     private string BuildEmailUrl(ContactMessage form)
     {
-        var email = _config["OrderNotifications:Email"] ?? _repo.Site.Email;
-        var subject = Uri.EscapeDataString("طلب جديد من موقع شركة السلطان");
+        // The customer composes this mail themselves, so it must address the public
+        // mailbox. The internal OrderNotifications:Email recipient is never exposed.
+        var email = _repo.Site.Email;
+        var subject = Uri.EscapeDataString("طلب جديد من موقع شركة النور");
         var body = Uri.EscapeDataString(BuildOrderText(form));
         return $"mailto:{email}?subject={subject}&body={body}";
     }
@@ -75,7 +77,7 @@ public class ContactController : Controller
     private static string BuildOrderText(ContactMessage form)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("🚚 طلب جديد من موقع شركة السلطان لنقل الأثاث");
+        sb.AppendLine("🚚 طلب جديد من موقع شركة النور لنقل الأثاث");
         sb.AppendLine("——————————————");
         sb.AppendLine($"👤 الاسم: {form.Name}");
         sb.AppendLine($"📱 الجوال: {form.Phone}");
