@@ -7,6 +7,19 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 });
 
+// Google Ads conversions for every call and WhatsApp link on the site. trackAdsConversion
+// comes from the tag in _Layout and is absent when GoogleAds:TagId is empty.
+// data-no-conversion marks links that belong to a booking already counted.
+document.addEventListener("click", function (event) {
+	if (typeof trackAdsConversion !== "function") return;
+	var link = event.target.closest("a[href]");
+	if (!link || link.hasAttribute("data-no-conversion")) return;
+
+	var href = link.getAttribute("href");
+	if (href.indexOf("tel:") === 0) trackAdsConversion("PhoneCall");
+	else if (href.indexOf("https://wa.me/") === 0) trackAdsConversion("WhatsApp");
+});
+
 async function submitOrder(event) {
 	event.preventDefault();
 

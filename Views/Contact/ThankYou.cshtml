@@ -28,7 +28,8 @@
                 لتسريع الرد، أرسل لنا تفاصيل طلبك عبر واتساب أو البريد الإلكتروني.
             </div>
             <div class="d-flex gap-2 justify-content-center flex-wrap">
-                <a id="followUpWhatsapp" href="@waUrl" target="_blank" rel="noopener" class="btn btn-wa btn-lg">
+                @* data-no-conversion: this sends the booking just counted, not a new lead. *@
+                <a id="followUpWhatsapp" href="@waUrl" target="_blank" rel="noopener" class="btn btn-wa btn-lg" data-no-conversion>
                     <i class="fa-brands fa-whatsapp"></i> إرسال الطلب عبر واتساب
                 </a>
                 <a id="followUpEmail" href="@emailUrl" class="btn btn-outline-c btn-lg">
@@ -51,7 +52,14 @@
     </div>
 </section>
 
-@if (!fromServer)
+@if (fromServer)
+{
+    <script>
+        // TempData is read once, so this only runs straight after a real submission.
+        if (typeof trackAdsConversion === "function") trackAdsConversion("Booking");
+    </script>
+}
+else
 {
     <script>
         // Orders sent by JavaScript hand their follow-up links over in sessionStorage.
@@ -66,6 +74,10 @@
                 return; // storage blocked — the direct-contact block stays visible
             }
             if (!raw) return;
+
+            // A handed-over order means a real submission just happened. The key is
+            // already cleared, so a refresh or a direct visit never counts a booking.
+            if (typeof trackAdsConversion === "function") trackAdsConversion("Booking");
 
             var urls;
             try { urls = JSON.parse(raw); } catch (error) { return; }

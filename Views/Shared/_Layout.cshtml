@@ -1,6 +1,11 @@
 @inject IContentRepository Repo
+@inject IConfiguration Configuration
 @{
     var site = Repo.Site;
+    var adsTagId = Configuration["GoogleAds:TagId"];
+    var adsConversions = Configuration.GetSection("GoogleAds:Conversions").GetChildren()
+        .Where(c => !string.IsNullOrWhiteSpace(c.Value))
+        .ToDictionary(c => c.Key, c => c.Value);
     var services = Repo.GetServices();
     string ctrl = (string?)ViewContext.RouteData.Values["controller"] ?? "Home";
     string act = (string?)ViewContext.RouteData.Values["action"] ?? "Index";
@@ -33,6 +38,24 @@
     <link rel="stylesheet" href="~/lib/fontawesome/fontawesome-subset.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @* Google Ads tag — the only copy on the site. ID and conversion labels come from
+       GoogleAds in appsettings.json; trackAdsConversion() skips actions with no label. *@
+    @if (!string.IsNullOrWhiteSpace(adsTagId))
+    {
+        <script async src="https://www.googletagmanager.com/gtag/js?id=@adsTagId"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(adsTagId)));
+
+            var adsConversions = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(adsConversions));
+            function trackAdsConversion(action) {
+                if (adsConversions[action]) gtag('event', 'conversion', { send_to: adsConversions[action] });
+            }
+        </script>
+    }
 </head>
 <body>
     <!-- Top bar -->
