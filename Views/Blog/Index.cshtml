@@ -24,6 +24,14 @@
         ViewData["Title"] = "مدونة نقل العفش والأثاث بالرياض";
         ViewData["Description"] = "مقالات ونصائح عملية عن نقل العفش بالرياض: التكلفة، التغليف، الفك والتركيب، التخزين، والنقل بين المدن — من فريق شركة النور لنقل الأثاث.";
     }
+
+    // Any URL carrying ?q= is a search result, including an empty or whitespace-only
+    // one that falls through to the plain list above. Keep every variant out of the
+    // index. robots.txt must NOT disallow these URLs, or Google never sees this tag.
+    if (Context.Request.Query.ContainsKey("q"))
+    {
+        ViewData["Robots"] = "noindex, follow";
+    }
 }
 
 <section class="page-hero">

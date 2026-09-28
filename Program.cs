@@ -94,6 +94,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Branded Arabic page for 404, the legacy 410s and any other bodiless error status.
+// Re-execute renders it in place: the visitor keeps the URL they asked for and the
+// crawler still receives the original 404/410, never a 200 (a "soft 404").
+app.UseStatusCodePagesWithReExecute("/error/{0}");
+
 app.UseResponseCompression();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -131,6 +136,11 @@ app.MapControllerRoute(
     name: "robots",
     pattern: "robots.txt",
     defaults: new { controller = "Seo", action = "Robots" });
+
+app.MapControllerRoute(
+    name: "status",
+    pattern: "error/{code:int}",
+    defaults: new { controller = "Home", action = "Status" });
 
 // Friendly slug routes (Arabic slugs are supported).
 app.MapControllerRoute(

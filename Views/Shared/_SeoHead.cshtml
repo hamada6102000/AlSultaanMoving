@@ -19,7 +19,12 @@
 
     var shareImage = Seo.DefaultImageUrl ?? Seo.LogoUrl;
 }
-<link rel="canonical" href="@canonical" />
+@* A noindex page gets no canonical: pairing the two sends Google conflicting signals,
+   and on a re-executed error page the canonical would name /error/404. *@
+@if (robots is null || !robots.Contains("noindex", StringComparison.OrdinalIgnoreCase))
+{
+    <link rel="canonical" href="@canonical" />
+}
 @if (!string.IsNullOrWhiteSpace(robots))
 {
     <meta name="robots" content="@robots" />

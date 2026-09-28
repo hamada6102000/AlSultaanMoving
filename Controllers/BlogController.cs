@@ -14,6 +14,11 @@ public class BlogController : Controller
     public IActionResult Index(int page = 1, string? q = null)
     {
         var (items, totalPages) = _repo.GetPostsPage(page, PageSize, q);
+
+        // A page past the end would otherwise be clamped and serve the last page's
+        // content under a second URL, which Google reports as a duplicate or soft 404.
+        if (page > totalPages) return NotFound();
+
         var vm = new BlogIndexViewModel
         {
             Posts = items.ToList(),

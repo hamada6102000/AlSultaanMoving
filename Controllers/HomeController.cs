@@ -32,4 +32,15 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    /// <summary>
+    /// Body for error status codes, re-executed by UseStatusCodePagesWithReExecute.
+    /// The status is set explicitly so a direct visit to /error/404 is a 404 as well.
+    /// </summary>
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Status(int code)
+    {
+        Response.StatusCode = code is >= 400 and <= 599 ? code : StatusCodes.Status404NotFound;
+        return View("NotFound", _repo.All);
+    }
 }
