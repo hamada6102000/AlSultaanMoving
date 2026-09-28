@@ -232,17 +232,9 @@ public class SchemaBuilder : ISchemaBuilder
         ["name"] = _repo.Site.Name,
         ["url"] = _seo.Absolute("/"),
         ["inLanguage"] = "ar",
-        ["publisher"] = Ref(BusinessId),
-        ["potentialAction"] = new Dictionary<string, object?>
-        {
-            ["@type"] = "SearchAction",
-            ["target"] = new Dictionary<string, object?>
-            {
-                ["@type"] = "EntryPoint",
-                ["urlTemplate"] = _seo.Absolute("/blog") + "?q={search_term_string}"
-            },
-            ["query-input"] = "required name=search_term_string"
-        }
+        // No SearchAction: Google retired the sitelinks search box, and its urlTemplate
+        // was being crawled literally as /blog?q={search_term_string}.
+        ["publisher"] = Ref(BusinessId)
     };
 
     private Dictionary<string, object?> FaqPage() => new()

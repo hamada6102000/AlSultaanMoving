@@ -163,6 +163,11 @@ section{position:relative}
 .area-card h4 i{color:var(--accent)}
 .hood-list{display:flex;flex-wrap:wrap;gap:.5rem;margin:0;padding:0;list-style:none}
 .hood-list li{background:var(--primary-light);color:var(--primary);border-radius:50px;padding:.3rem .9rem;font-size:.85rem;font-weight:600}
+.hood-list li.has-post{background:var(--accent);padding:0}
+.hood-list li.has-post a{display:block;padding:.3rem .9rem;color:#3a2600}
+.area-posts{list-style:none;margin:1rem 0 0;padding:1rem 0 0;border-top:1px solid var(--line);font-size:.9rem;line-height:1.7}
+.area-posts li+li{margin-top:.4rem}
+.area-posts i{color:var(--accent);margin-inline-end:.3rem}
 
 /* testimonials */
 .testi-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem;height:100%}

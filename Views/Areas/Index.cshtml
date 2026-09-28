@@ -3,6 +3,15 @@
     ViewData["Title"] = "مناطق خدمة نقل العفش في الرياض";
     ViewData["Description"] = "نغطي شمال ووسط وشرق وغرب وجنوب الرياض: الياسمين والنرجس والملقا والعليا والروضة والعقيق وغيرها. فريق نقل عفش يصل إلى حيّك على مدار الساعة.";
     var site = Model.Site;
+
+    // Link each region and neighborhood to the posts written about it, matched on the
+    // post title so a new neighborhood post is picked up without touching this view.
+    // A list of bare names gave Google nothing to index; the links make this page the
+    // hub for the location posts and pass authority down to them.
+    BlogPost? PostFor(string hood) =>
+        Model.Blog.FirstOrDefault(p => p.Title.Contains("حي " + hood));
+    List<BlogPost> PostsFor(string region) =>
+        Model.Blog.Where(p => p.Title.Contains(region)).ToList();
 }
 
 <section class="page-hero">
@@ -30,9 +39,27 @@
                         <ul class="hood-list">
                             @foreach (var h in a.Neighborhoods)
                             {
-                                <li>@h</li>
+                                var hoodPost = PostFor(h);
+                                if (hoodPost is null)
+                                {
+                                    <li>@h</li>
+                                }
+                                else
+                                {
+                                    <li class="has-post"><a asp-controller="Blog" asp-action="Post" asp-route-slug="@hoodPost.Slug" title="@hoodPost.Title">@h</a></li>
+                                }
                             }
                         </ul>
+                        @{ var regionPosts = PostsFor(a.Region); }
+                        @if (regionPosts.Any())
+                        {
+                            <ul class="area-posts">
+                                @foreach (var p in regionPosts)
+                                {
+                                    <li><a asp-controller="Blog" asp-action="Post" asp-route-slug="@p.Slug"><i class="fa-solid fa-file-lines"></i> @p.Title</a></li>
+                                }
+                            </ul>
+                        }
                     </div>
                 </div>
             }
